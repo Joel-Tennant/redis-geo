@@ -13,9 +13,11 @@ export PATH=$PATH:$HOME/.local/bin # put aws in the path
 
 # replace environment variables in task-definition
 envsubst < task-definition.json > new-task-definition.json
+echo is this the problem line
 
-eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||') #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
+eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||' | yes) | #needs AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY envvars
 echo yes
+
 if [ $(aws ecr describe-repositories | jq --arg x $IMAGE_NAME '[.repositories[] | .repositoryName == $x] | any') == "true" ]; then
     echo "Found ECS Repository $IMAGE_NAME"
 else
